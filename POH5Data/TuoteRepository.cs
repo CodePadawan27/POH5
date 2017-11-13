@@ -217,7 +217,7 @@ namespace POH5Data
 
         private Tuote TeeRivistaTuote(IDataReader reader)
         {
-            Tuote paluu = new Tuote(
+            TuoteProxy paluu = new TuoteProxy(
                 int.Parse(reader["ProductID"].ToString()), 
                 reader["ProductName"].ToString()
                 );
@@ -269,6 +269,10 @@ namespace POH5Data
 
             paluu.YksikkoKuvaus = reader["QuantityPerUnit"].ToString();
             paluu.EiKaytossa = bool.Parse(reader["Discontinued"].ToString());
+
+            //Toimittaja ja TuoteRyhma‐olioiden myöhempää populointia varten
+            ((TuoteProxy)paluu).ToimittajaRepository = new ToimittajaRepository(ConnectionString);
+            ((TuoteProxy)paluu).TuoteRyhmaRepository = new TuoteRyhmaRepository(ConnectionString);
 
             return paluu;
         }

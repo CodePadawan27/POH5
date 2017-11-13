@@ -165,7 +165,7 @@ namespace POH5Data
         }
         private Toimittaja TeeRivistaToimittaja(IDataReader reader)
         {
-            Toimittaja paluu = new Toimittaja(
+            ToimittajaProxy paluu = new ToimittajaProxy(
                 int.Parse(reader["SupplierID"].ToString()), 
                 reader["CompanyName"].ToString()
                 );
@@ -175,6 +175,9 @@ namespace POH5Data
             paluu.Kaupunki = reader["City"].ToString();
             paluu.Maa = reader["Country"].ToString();
             paluu.PostiKoodi = reader["PostalCode"].ToString();
+
+            //Tuote‐olioiden myöhempää populointia varten
+            ((ToimittajaProxy)paluu).TuoteRepository = new TuoteRepository(ConnectionString);
 
             return paluu;
         }

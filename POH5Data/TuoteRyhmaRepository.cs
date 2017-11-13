@@ -151,12 +151,15 @@ namespace POH5Data
         }
         private TuoteRyhma TeeRivistaTuoteRyhma(IDataReader reader)
         {
-            TuoteRyhma paluu = new TuoteRyhma(
+            TuoteRyhmaProxy paluu = new TuoteRyhmaProxy(
                 int.Parse(reader["CategoryID"].ToString()), 
                 reader["CategoryName"].ToString()
                 );
 
             paluu.Kuvaus = reader["Description"].ToString();
+
+            //Tuote‐olioiden myöhempää populointia varten
+            ((TuoteRyhmaProxy)paluu).TuoteRepository = new TuoteRepository(ConnectionString);
 
             return paluu;
         }
