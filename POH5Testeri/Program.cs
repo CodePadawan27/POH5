@@ -20,20 +20,42 @@ namespace POH5Testeri
             TuoteRepository tr = new TuoteRepository(yhteysasetukset.ConnectionString);
             TuoteRyhmaRepository trr = new TuoteRyhmaRepository(yhteysasetukset.ConnectionString);
 
+            Console.WriteLine("Terve, ole hyvä ja valitse\n1. Demo1\n2. Demo2\n3. Demo3\n4. Demo4\n5. Demo5");
+            int syote = int.Parse(Console.ReadLine());
+
+            switch (syote)
+            {
+                case 1:
+                    Demo1(tr);
+                    break;
+                case 2:
+                    Demo2(trr);
+                    break;
+                case 3:
+                    Demo3(trr);
+                    break;
+                case 4:
+                    Demo4(trr);
+                    break;
+                case 5:
+                    Demo5(trr);
+                    break;
+                default:
+                    break;
+            }
+
+
             //Demo1(tr);
             //Demo2(trr);
             //Demo3(trr);
             //Demo4(trr);
-            Demo5(trr);
+            //Demo5(trr);
 
             Console.ReadLine();
-
-
         }
 
         static void Demo1(TuoteRepository tr)
         {
-            //var tuotteet = tr.HaeKaikki();
             Console.WriteLine($"Tuotteita {tr.HaeKaikki().Count} kpl");
             int syote;
             while (true)
@@ -47,13 +69,10 @@ namespace POH5Testeri
 
                 var valittuTuote = tr.HaeKaikki()
                     .Where(t => t.Id.Equals(syote));
-                //.ToList()
 
                 foreach (var tuote in valittuTuote)
                 {
                     Console.WriteLine($"{tuote.Id} {tuote.Nimi} toimittaja: {tuote.ToimittajaId} {tuote.Toimittaja.Nimi} tuoteryhmä: {tuote.RyhmaId} {tuote.Ryhma.Nimi}\n");
-
-                    //.ForEach(a => Console.WriteLine($"{t.Id} {t.Nimi} {t.ToimittajaId} {t.Toimittaja.Nimi} {t.RyhmaId} {t.Ryhma.Nimi}"));
 
                 }
             }
