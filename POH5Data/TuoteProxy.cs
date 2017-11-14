@@ -24,14 +24,15 @@ namespace POH5Data
             {
                 if (base.ToimittajaId.HasValue)
                 {
+                    if (!ToimittajaHaettu)
+                    {
+                        _toimittaja = ToimittajaRepository.Hae(base.ToimittajaId.Value);
+                        ToimittajaHaettu = true;
+                        return _toimittaja;
+                    }
                     return _toimittaja;
                 }
-                else if (!ToimittajaHaettu)
-                {
-                    _toimittaja = ToimittajaRepository.Hae(base.ToimittajaId.Value);
-                    ToimittajaHaettu = true;
-                    return _toimittaja;
-                }
+                
                 else
                 {
                     return null;
@@ -48,14 +49,15 @@ namespace POH5Data
             {
                 if (base.RyhmaId.HasValue)
                 {
+                    if (!RyhmaHaettu)
+                    {
+                        _ryhma = TuoteRyhmaRepository.Hae(base.RyhmaId.Value);
+                        RyhmaHaettu = true;
+                        return _ryhma;
+                    }
                     return _ryhma;
                 }
-                else if (!RyhmaHaettu)
-                {
-                    _ryhma = TuoteRyhmaRepository.Hae(base.RyhmaId.Value);
-                    RyhmaHaettu = true;
-                    return _ryhma;
-                }
+                
                 else
                 {
                     return null;

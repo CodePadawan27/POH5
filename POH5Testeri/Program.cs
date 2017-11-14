@@ -20,11 +20,11 @@ namespace POH5Testeri
             TuoteRepository tr = new TuoteRepository(yhteysasetukset.ConnectionString);
             TuoteRyhmaRepository trr = new TuoteRyhmaRepository(yhteysasetukset.ConnectionString);
 
-            Demo1(tr);
-            /*Demo2();
-            Demo3();
-            Demo4();
-            Demo5();*/
+            //Demo1(tr);
+            //Demo2(trr);
+            //Demo3(trr);
+            //Demo4(trr);
+            Demo5(trr);
 
             Console.ReadLine();
 
@@ -36,44 +36,177 @@ namespace POH5Testeri
             //var tuotteet = tr.HaeKaikki();
             Console.WriteLine($"Tuotteita {tr.HaeKaikki().Count} kpl");
             int syote;
-            do
+            while (true)
             {
-                Console.WriteLine("Anna tuotteen id: ");
-                syote = int.Parse(Console.ReadLine());
-            } while (syote < 0);
+                do
+                {
+                    Console.WriteLine("Anna tuotteen id: ");
+                    syote = int.Parse(Console.ReadLine());
+                } while (syote < 0);
 
 
-            var valittuTuote = tr.HaeKaikki()
-                .Where(t => t.Id.Equals(syote))
-                .ToList();
+                var valittuTuote = tr.HaeKaikki()
+                    .Where(t => t.Id.Equals(syote));
+                //.ToList()
 
-            foreach (var tuote in valittuTuote)
-            {
-                Console.WriteLine($"{tuote.Id} {tuote.Nimi} toimittaja: {tuote.ToimittajaId} {tuote.Toimittaja.Nimi} {tuote.RyhmaId} {tuote.Ryhma.Nimi}");
+                foreach (var tuote in valittuTuote)
+                {
+                    Console.WriteLine($"{tuote.Id} {tuote.Nimi} toimittaja: {tuote.ToimittajaId} {tuote.Toimittaja.Nimi} tuoteryhmä: {tuote.RyhmaId} {tuote.Ryhma.Nimi}\n");
 
-                //.ForEach(a => Console.WriteLine($"{t.Id} {t.Nimi} {t.ToimittajaId} {t.Toimittaja.Nimi} {t.RyhmaId} {t.Ryhma.Nimi}"));
+                    //.ForEach(a => Console.WriteLine($"{t.Id} {t.Nimi} {t.ToimittajaId} {t.Toimittaja.Nimi} {t.RyhmaId} {t.Ryhma.Nimi}"));
 
+                }
             }
         }
 
         static void Demo2(TuoteRyhmaRepository ttr)
         {
+            var lista = ttr.HaeKaikki();
+            foreach (var tuoteRyhma in lista)
+            {
+                if (string.IsNullOrEmpty(tuoteRyhma.Kuvaus))
+                    Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: NULL");
+                else
+                    Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: {tuoteRyhma.Kuvaus}");
+            }
+            Console.WriteLine("Valitse ryhmä: ");
+            int syote = int.Parse(Console.ReadLine());
+            var valittulista = lista.Where(l => l.Id.Equals(syote));
 
+            foreach (var tuoteRyhma in valittulista)
+            {
+                if (string.IsNullOrEmpty(tuoteRyhma.Kuvaus))
+                    Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: NULL");
+                else
+                    Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: {tuoteRyhma.Kuvaus}");
+            }
+            Console.WriteLine("Tuotteet: ");
+            foreach (var tuoteRyhma in valittulista)
+            {
+                foreach (var tuote in tuoteRyhma.Tuotteet)
+                {
+                    Console.WriteLine($"{tuote.Id} {tuote.Nimi}, yksikköhinta: {tuote.YksikkoHinta:0.00} / {tuote.YksikkoKuvaus}");
+                }
+            }
+            Console.WriteLine("Paina Enter lopettaaksesi...");
         }
 
         static void Demo3(TuoteRyhmaRepository ttr)
         {
+            Console.WriteLine("Lisätäänkö uusi <k/e>: ");
+            char syotto = char.Parse(Console.ReadLine());
 
+            if (syotto.Equals('k') || syotto.Equals('K'))
+            {
+                TuoteRyhma uusiTuoteRyhma = new TuoteRyhma();
+                Console.WriteLine("Anna nimi: ");
+                uusiTuoteRyhma.Nimi = Console.ReadLine();
+                Console.WriteLine("Anna kuvaus: ");
+                string tuoteryhmaKuvaus = Console.ReadLine();
+                if (tuoteryhmaKuvaus.Equals(""))
+                {
+                    uusiTuoteRyhma.Kuvaus = null;
+                }
+                else
+                {
+                    uusiTuoteRyhma.Kuvaus = tuoteryhmaKuvaus;
+                }
+
+                ttr.Lisaa(uusiTuoteRyhma);
+
+                var lista = ttr.HaeKaikki();
+                foreach (var tuoteRyhma in lista)
+                {
+                    if (string.IsNullOrEmpty(tuoteRyhma.Kuvaus))
+                        Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: NULL");
+                    else
+                        Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: {tuoteRyhma.Kuvaus}");
+                }
+            }
+            else
+            {
+                Environment.Exit(0);
+            }
         }
 
         static void Demo4(TuoteRyhmaRepository ttr)
         {
+            var lista = ttr.HaeKaikki();
+            foreach (var tuoteRyhma in lista)
+            {
+                if (string.IsNullOrEmpty(tuoteRyhma.Kuvaus))
+                    Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: NULL");
+                else
+                    Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: {tuoteRyhma.Kuvaus}");
+            }
 
+            Console.WriteLine("Valitse muutettava: ");
+            int syote = int.Parse(Console.ReadLine());
+            var valittuTuoteRyhma = lista.Where(t => t.Id.Equals(syote));
+
+            Console.WriteLine("Muuta nimi: ");
+            string uusiNimi = Console.ReadLine();
+            foreach (var tuoteRyhma in valittuTuoteRyhma)
+            {
+                if (!string.IsNullOrEmpty(uusiNimi))
+                {
+                    tuoteRyhma.Nimi = uusiNimi;
+                }
+
+            }
+
+            Console.WriteLine("Muuta kuvaus: ");
+            string uusiKuvaus = Console.ReadLine();
+            foreach (var tuoteRyhma in valittuTuoteRyhma)
+            {
+                if (uusiKuvaus.Equals("NULL"))
+                    tuoteRyhma.Kuvaus = null;
+                else
+                    tuoteRyhma.Kuvaus = uusiKuvaus;
+            }
+
+            foreach (var tuoteRyhma in valittuTuoteRyhma)
+            {
+                ttr.Muuta(tuoteRyhma);
+            }
+
+            var uusiLista = ttr.HaeKaikki();
+            foreach (var tuoteRyhma in uusiLista)
+            {
+                if (string.IsNullOrEmpty(tuoteRyhma.Kuvaus))
+                    Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: NULL");
+                else
+                    Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: {tuoteRyhma.Kuvaus}");
+            }
+
+            Console.WriteLine("Paina Enter lopettaaksesi...");
         }
 
         static void Demo5(TuoteRyhmaRepository ttr)
         {
+            var lista = ttr.HaeKaikki();
+            foreach (var tuoteRyhma in lista)
+            {
+                if (string.IsNullOrEmpty(tuoteRyhma.Kuvaus))
+                    Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: NULL");
+                else
+                    Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: {tuoteRyhma.Kuvaus}");
+            }
 
+            Console.WriteLine("Valitse poistettava");
+            int syote = int.Parse(Console.ReadLine());
+            ttr.Poista(syote);
+
+            var uusiLista = ttr.HaeKaikki();
+            foreach (var tuoteRyhma in uusiLista)
+            {
+                if (string.IsNullOrEmpty(tuoteRyhma.Kuvaus))
+                    Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: NULL");
+                else
+                    Console.WriteLine($"{tuoteRyhma.Id} {tuoteRyhma.Nimi}: {tuoteRyhma.Kuvaus}");
+            }
+
+            Console.WriteLine("Paina Enter lopettaaksesi...");
         }
 
         static void AsetaDataDirectory()
